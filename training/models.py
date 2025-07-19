@@ -28,8 +28,8 @@ class Exercise(models.Model):
 class ExerciseInSession(models.Model):
     workout_session = models.ForeignKey(WorkoutSession, on_delete=models.CASCADE)
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
-    sets = models.IntegerField()
-    repetitions = models.IntegerField()
+    sets = models.PositiveIntegerField()
+    repetitions = models.PositiveIntegerField()
     weight = models.FloatField()
     def __str__(self):
         return f"Exercise: {self.exercise.name}, Sets: {self.sets}, Reps: {self.repetitions}, Weight: {self.weight}"
