@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+	<div>
+        <p>Czy na Pewno chcesz się wylogować?</p>
+        <div>
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" name="operation" value="Tak">Tak</button>
+            <button type="submit" name="operation" value="Nie">Nie</button>
+        </form>
+        </div>
+    </div>
+{% endblock %}

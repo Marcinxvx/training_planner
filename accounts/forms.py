@@ -11,3 +11,7 @@ class RegisterUserForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         for field_name in self.fields:
             self.fields[field_name].help_text = ''
+
+class LoginUserForm(forms.Form):
+    username = forms.CharField(label='Nazwa użytkownika', widget=forms.TextInput)
+    password = forms.CharField(label='Hasło', widget=forms.PasswordInput)

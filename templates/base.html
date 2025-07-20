@@ -9,6 +9,11 @@
 </head>
 <body>
     <div>
+        {% if user.is_authenticated %}
+        <p>Witaj {{ user.username }}!</p>
+        {% endif %}
+    </div>
+    <div>
         {% include 'links.html' %}
     </div>
     <div>
