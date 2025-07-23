@@ -37,7 +37,7 @@ class LogoutUserView(View):
     def get(self, request):
         return render(request, 'accounts/logout.html')
     def post(self, request):
-        if request.POST.get('operation') == 'Tak':
+        if request.POST.get('operation') == 'Yes':
             logout(request)
             return redirect('home')
         next_url = request.GET.get('next', 'home')

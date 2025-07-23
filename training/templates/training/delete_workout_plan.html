@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
-{% block content %}
-	<div>
-        <p>Czy na Pewno chcesz się wylogować?</p>
-        <div>
+{%  block content %}
+    <div>
+        <p>
+            Czy jesteś pewien, że chcesz usunąć {{ workout_plan.name }}?
+        </p>
+    </div>
+    <div>
         <form method="POST">
             {% csrf_token %}
             <button type="submit" name="operation" value="Yes">Tak</button>
             <button type="submit" name="operation" value="No">Nie</button>
         </form>
-        </div>
     </div>
 {% endblock %}

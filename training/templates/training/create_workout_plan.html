@@ -1,5 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
+    <div><h3>Lista Planów Treningowych</h3>
+        <ol>
+            {% for workout_plan in workout_plans %}
+                <li>{{ workout_plan.name }}
+                    <a href="{%  url 'update_workout_plan' workout_plan.pk %}"><button>Aktualizuj</button></a>
+                    <a href="{%  url 'delete_workout_plan' workout_plan.pk %}"><button>Usuń</button></a>
+                </li>
+            {% endfor %}
+        </ol>
+    </div>
+    <div><h3>Dodaj Nowy Plan</h3>
     {%  include 'training/form_training.html' %}
-
+    </div>
 {% endblock %}
