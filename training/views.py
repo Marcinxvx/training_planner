@@ -18,7 +18,7 @@ class CreateWorkoutPlanView(LoginRequiredMixin, View):
         if form.is_valid():
             workout_plan = form.save(commit=False)
             workout_plan.user = request.user
-            form.save()
+            workout_plan.save()
             return redirect('home')
         return render(request, 'training/create_workout_plan.html', {'form': form})
 
