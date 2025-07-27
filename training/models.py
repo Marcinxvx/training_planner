@@ -7,7 +7,7 @@ class WorkoutPlan(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     def __str__(self):
-        return f"User: {self.user.username}, Plan: {self.name}"
+        return self.name
 
 class WorkoutSession(models.Model):
     workout_plan = models.ForeignKey(WorkoutPlan, on_delete=models.CASCADE)

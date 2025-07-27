@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h3>Wprowadz zmiany do {{ workout_session.name }}</h3>
+    {% include 'training/form_training.html' %}
+{% endblock %}

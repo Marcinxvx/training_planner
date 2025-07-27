@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div><h2>Plan Treningowy: {{ workout_plan.name }}</h2></div>
+    <div><h3>Dodaj Nowy Trening</h3>
+    {% include 'training/form_training.html' %}
+    </div>
+    <div><h3>Lista Treningów</h3>
+        <ul>
+            {% for workout_session in workout_sessions %}
+            <li><h5>{{ workout_session.date }} {{ workout_session.name }} </h5><h5>Status: {{ workout_session.get_status_display }} Plan: {{ workout_session.workout_plan }}</h5>
+                <a href="{% url 'update_workout_session' workout_session.pk %}"><button>Aktualizuj</button></a>
+                <a href="{% url 'delete_workout_session' workout_session.pk %}"><button>Usuń</button></a>
+            </li>
+            {%  endfor %}
+        </ul>
+    </div>
+{% endblock %}
