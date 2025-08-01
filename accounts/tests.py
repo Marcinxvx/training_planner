@@ -52,7 +52,7 @@ def test_logout_user(client, user_login_data):
     client.login(username=user_login_data.username, password='Password123!@#')
     assert '_auth_user_id' in client.session
     data = {
-        'operation': 'Tak'
+        'operation': 'Yes'
     }
     response = client.post(reverse('logout'), data)
     assert response.status_code == 302
