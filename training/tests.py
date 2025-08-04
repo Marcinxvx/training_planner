@@ -127,3 +127,9 @@ def test_delete_workout_session_view_post_success(user, workout_sessions, workou
     response = c.post(reverse('delete_workout_session', kwargs={'primary_key': workout_sessions[0].id}), date)
     assert response.status_code == 302
     assert not WorkoutSession.objects.filter(id=workout_sessions[0].id, workout_plan__user=user).exists()
+
+@pytest.mark.django_db
+def test_workout_plan_detail_view(user, workout_plans):
+    c = Client()
+    c.forece_login(user)
+    data = {'operation': 'Yes'}

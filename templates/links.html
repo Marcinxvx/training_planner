@@ -3,10 +3,12 @@
     <a href="{% url 'logout' %}">Wyloguj się</a>
     {%  else %}
     <a href="{% url 'register' %}">Zarejestruj się</a>
-    <a href="{% url 'login' %}"}>Zaloguj się</a>
+    <a href="{% url 'login' %}">Zaloguj się</a>
     {% endif %}
 </div>
 <div>
     <a href="{% url 'create_workout_plan' %}">Plan treningowy</a>
     <a href="{% url 'create_workout_session' %}">Sesja treningowa</a>
+    <a href="{% url 'create_exercise' %}">Moje Ćwiczenia</a>
+    <a href="{% url 'public_exercise_list' %}">Baza Ćwiczeń</a>
 </div>

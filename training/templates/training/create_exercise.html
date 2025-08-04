@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div><h3>Lista Ćwiczeń</h3>
+        <form method="get">
+            <input type="text" name="search" value="{{ query }}">
+            <button type="submit">Szukaj</button>
+        </form>
+        <ol>
+            {% for exercise in exercises %}
+               <li><h4>{{ exercise.name }}</h4>
+                  {#  <a href="{% url 'workout_plan_detail' workout_plan.pk %}"><button>Szczegóły</button></a> #}
+                  <a href="{% url 'update_exercise' exercise.pk %}"><button>Aktualizuj</button></a>
+                  <a href="{% url 'delete_exercise' exercise.pk %}"><button>Usuń</button></a>
+                </li>
+            {% endfor %}
+        </ol>
+    </div>
+    <div><h3>Dodaj Nowe Ćwiczenie</h3>
+        {% if form %}
+            {%  include 'training/form_training.html' %}
+        {% else %}
+            <p>Aby dodać nowe ćwiczenie <a href="{% url 'login' %}?next={% url 'create_exercise' %}">zaloguj się</a></p>
+        {% endif %}
+    </div>
+{% endblock %}

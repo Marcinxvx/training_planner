@@ -1,5 +1,5 @@
 from django import forms
-from training.models import WorkoutPlan, WorkoutSession
+from training.models import WorkoutPlan, WorkoutSession, Exercise
 
 
 class CreateWorkoutPlanForm(forms.ModelForm):
@@ -34,4 +34,13 @@ class CreateWorkoutSessionForPlanForm(forms.ModelForm):
         widgets = {
             'date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'status': forms.RadioSelect(),
+        }
+
+class CreateExerciseForm(forms.ModelForm):
+    class Meta:
+        model = Exercise
+        fields = ['name', 'description']
+        labels = {
+            'name': 'Nazwa',
+            'description': 'Opis',
         }

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div><h3>Baza Ćwiczeń</h3>
+        <form method="get">
+            <input type="text" name="search" value="{{ query }}">
+            <button type="submit">Szukaj</button>
+        </form>
+        <ol>
+            {% for exercise in exercises %}
+               <li><h4>{{ exercise.name }}</h4>
+                   <p>{{ exercise.description }}</p>
+                        {% if user.is_authenticated %}
+                            <form action="{% url 'copy_exercise' exercise.pk %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Dodaj do moich ćwiczeń</button>
+                        </form>
+                        {% endif %}
+               </li>
+            {% endfor %}
+        </ol>
+    </div>
+{% endblock %}

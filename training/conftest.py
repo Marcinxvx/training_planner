@@ -1,7 +1,6 @@
 import pytest
 from django.contrib.auth.models import User
 from training.models import WorkoutPlan, WorkoutSession
-from django.utils.timezone import now
 from datetime import datetime,timezone, timedelta
 
 @pytest.fixture
