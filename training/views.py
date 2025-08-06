@@ -149,22 +149,15 @@ class DeleteExerciseView(LoginRequiredMixin, View):
 class PublicExerciseListView(View):
     def get(self, request):
         query = request.GET.get('search', '')
-        all_exercises = Exercise.objects.all().order_by('name')
-
+        exercises = Exercise.objects.none()
         if request.user.is_authenticated:
-            # Zbierz pary (name, description) ćwiczeń użytkownika
-            user_exercise_signatures = set(Exercise.objects.filter(user=request.user).values_list('name', 'description'))
-
-            # Zacznij od wszystkich ćwiczeń, ale...
-            exercises = all_exercises.exclude(user=request.user)
-
-            # Usuń z listy ćwiczenia o identycznym (name, description), które user już ma
-            exercises = exercises.exclude(
-                Q(name__in=[name for name, _ in user_exercise_signatures]) &
-                Q(description__in=[desc for _, desc in user_exercise_signatures])
-            )
+            other_users_exercises = Exercise.objects.exclude(user=request.user)
+            user_exercise_names = Exercise.objects.filter(user=request.user).values_list('name', flat=True)
+            other_users_exercises = other_users_exercises.exclude(name__in=user_exercise_names)
+            unique_ids = (other_users_exercises.values('name').annotate(first_id=Min('id')).values_list('first_id', flat=True))
+            exercises = Exercise.objects.filter(id__in=unique_ids)
         else:
-            unique_ids = Exercise.objects.values('name', 'description').annotate(first_id=Min('id')).values_list('first_id', flat=True)
+            unique_ids = Exercise.objects.values('name').annotate(first_id=Min('id')).values_list('first_id', flat=True)
             exercises = Exercise.objects.filter(id__in=unique_ids)
         if query:
             exercises = exercises.filter(name__icontains=query)
@@ -177,82 +170,3 @@ class CopyExerciseView(LoginRequiredMixin, View):
         if not already_exists:
             Exercise.objects.create(name=original.name, description=original.description, user=request.user)
         return redirect('public_exercise_list')
-
-
-
-
-
-
-"""
-1. Widok: Baza ćwiczeń (publiczna baza)
-
-    Pokazuje wszystkie ćwiczenia, niezależnie od właściciela (Exercise.objects.all())
-
-    Sortuje alfabetycznie po name
-
-    Dostępny dla wszystkich (nie wymaga logowania)
-
-    Jeśli użytkownik jest zalogowany, przy ćwiczeniu jest przycisk „Kopiuj”
-
-    Niezalogowani widzą tylko listę, bez przycisków
-
-
-
-
-class PublicExerciseListView(View):
-    def get(self, request):
-        query = request.GET.get('search', '')
-        exercises = Exercise.objects.all().order_by('name')
-        if query:
-            exercises = exercises.filter(name__icontains=query)
-        return render(request, 'training/public_exercise_list.html', {
-            'exercises': exercises,
-            'query': query
-        })
-
-class CopyExerciseView(LoginRequiredMixin, View):
-    def post(self, request, pk):
-        original = Exercise.objects.get(pk=pk)
-        # Sprawdź, czy użytkownik już nie ma takiego ćwiczenia (opcjonalnie)
-        Exercise.objects.create(
-            name=original.name,
-            description=original.description,
-            user=request.user
-        )
-        return redirect('public_exercise_list')
-
-W urls.py:
-
-path('exercises/', views.PublicExerciseListView.as_view(), name='public_exercise_list'),
-path('exercises/copy/<int:pk>/', views.CopyExerciseView.as_view(), name='copy_exercise'),
-
-W szablonie public_exercise_list.html przy każdym ćwiczeniu:
-
-{% for exercise in exercises %}
-    <li>
-        <h4>{{ exercise.name }}</h4>
-        <p>{{ exercise.description }}</p>
-        {% if user.is_authenticated %}
-            <form action="{% url 'copy_exercise' exercise.pk %}" method="post" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit">Kopiuj</button>
-            </form>
-        {% endif %}
-    </li>
-{% endfor %}
-
-2. Widok: Moje ćwiczenia (prywatna baza)
-
-    Wyświetla tylko ćwiczenia zalogowanego użytkownika (Exercise.objects.filter(user=request.user))
-
-    Można dodawać, edytować, usuwać (jak masz już zrobione)
-
-| Widok                  | Co wyświetla                     | Dostępność           | Akcje                       |
-| ---------------------- | -------------------------------- | -------------------- | --------------------------- |
-| PublicExerciseListView | Wszystkie ćwiczenia (wszystkich) | Wszyscy (publicznie) | „Kopiuj” (tylko zalogowani) |
-| CreateExerciseView     | Ćwiczenia użytkownika            | Zalogowani           | Dodaj                       |
-| UpdateExerciseView     | Ćwiczenia użytkownika            | Zalogowani           | Edytuj                      |
-| DeleteExerciseView     | Ćwiczenia użytkownika            | Zalogowani           | Usuń                        |
-
-
-"""

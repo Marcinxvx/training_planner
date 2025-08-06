@@ -1,5 +1,5 @@
 from django import forms
-from training.models import WorkoutPlan, WorkoutSession, Exercise
+from training.models import WorkoutPlan, WorkoutSession, Exercise, ExerciseInSession
 
 
 class CreateWorkoutPlanForm(forms.ModelForm):
