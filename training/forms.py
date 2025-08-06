@@ -44,3 +44,23 @@ class CreateExerciseForm(forms.ModelForm):
             'name': 'Nazwa',
             'description': 'Opis',
         }
+class CreateExerciseInSessionForm(forms.ModelForm):
+    class Meta:
+        model = ExerciseInSession
+        fields = ['exercise', 'sets', 'repetitions', 'weight']
+        labels = {
+            'exercise': 'Ćwiczenie',
+            'sets': 'Serie',
+            'repetitions': 'Powtórzenia',
+            'weight': 'Ciężar',
+        }
+
+class UpdateExerciseInSessionForm(forms.ModelForm):
+    class Meta:
+        model = ExerciseInSession
+        fields = ['sets', 'repetitions', 'weight']
+        labels = {
+            'sets': 'Serie',
+            'repetitions': 'Powtórzenia',
+            'weight': 'Ciężar',
+        }

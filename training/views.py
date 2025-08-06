@@ -3,9 +3,9 @@ from django.db.models import Q, Min
 from django.shortcuts import render, redirect
 from django.views import View
 from django import forms
-from training.forms import CreateWorkoutPlanForm, CreateWorkoutSessionForm, CreateWorkoutSessionForPlanForm, CreateExerciseForm
-from training.models import WorkoutPlan, WorkoutSession, Exercise
-
+from training.forms import CreateWorkoutPlanForm, CreateWorkoutSessionForm, CreateWorkoutSessionForPlanForm, \
+    CreateExerciseForm, CreateExerciseInSessionForm, UpdateExerciseInSessionForm
+from training.models import WorkoutPlan, WorkoutSession, Exercise, ExerciseInSession
 
 
 # Create your views here.
@@ -170,3 +170,48 @@ class CopyExerciseView(LoginRequiredMixin, View):
         if not already_exists:
             Exercise.objects.create(name=original.name, description=original.description, user=request.user)
         return redirect('public_exercise_list')
+
+class CreateExerciseInSessionView(LoginRequiredMixin, View):
+    def get(self, request, primary_key):
+        workout_session = WorkoutSession.objects.get(pk=primary_key)
+        exercises_in_session = ExerciseInSession.objects.filter(workout_session=workout_session)
+        form = CreateExerciseInSessionForm()
+        form.fields['exercise'].queryset = Exercise.objects.filter(user=request.user)
+        return render(request, 'training/create_exercise_in_session.html', {'form': form, 'exercises_in_session': exercises_in_session, 'workout_session': workout_session})
+    def post(self, request, primary_key):
+        workout_session = WorkoutSession.objects.get(pk=primary_key)
+        exercises_in_session = ExerciseInSession.objects.filter(workout_session=workout_session)
+        form = CreateExerciseInSessionForm(request.POST)
+        form.fields['exercise'].queryset = Exercise.objects.filter(user=request.user)
+        if form.is_valid():
+            exercise_in_session = form.save(commit=False)
+            exercise_in_session.workout_session = workout_session
+            exercise_in_session.save()
+            return redirect('create_exercise_in_session', primary_key=workout_session.pk)
+        return render(request, 'training/create_exercise_in_session.html', {'form': form, 'exercises_in_session': exercises_in_session, 'workout_session': workout_session})
+
+class UpdateExerciseInSessionView(LoginRequiredMixin, View):
+    def get(self, request, primary_key):
+        exercise_in_session = ExerciseInSession.objects.get(pk=primary_key)
+        form = UpdateExerciseInSessionForm(instance=exercise_in_session)
+        return render(request, 'training/update_exercise_in_session.html', {'form': form, 'exercise_in_session': exercise_in_session})
+    def post(self, request, primary_key):
+        exercise_in_session = ExerciseInSession.objects.get(pk=primary_key)
+        form = UpdateExerciseInSessionForm(request.POST, instance=exercise_in_session)
+        if form.is_valid():
+            form.save()
+            workout_session_primary_key = exercise_in_session.workout_session.pk
+            return redirect('create_exercise_in_session', primary_key=workout_session_primary_key )
+        return render(request, 'training/update_exercise_in_session.html', {'form': form, 'exercise_in_session': exercise_in_session})
+
+class DeleteExerciseInSessionView(LoginRequiredMixin, View):
+    def get(self, request, primary_key):
+        exercise_in_session = ExerciseInSession.objects.get(pk=primary_key)
+        return render(request, 'training/delete_exercise_in_session.html', {'exercise_in_session': exercise_in_session})
+    def post(self, request, primary_key):
+        exercise_in_session = ExerciseInSession.objects.get(pk=primary_key)
+        workout_session_primary_key = exercise_in_session.workout_session.pk
+        if request.POST.get('operation') == "Yes":
+            exercise_in_session = ExerciseInSession.objects.get(pk=primary_key)
+            exercise_in_session.delete()
+        return redirect('create_exercise_in_session', primary_key=workout_session_primary_key)

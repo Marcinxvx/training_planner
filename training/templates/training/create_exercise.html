@@ -8,7 +8,6 @@
         <ol>
             {% for exercise in exercises %}
                <li><h4>{{ exercise.name }}</h4>
-                  {#  <a href="{% url 'workout_plan_detail' workout_plan.pk %}"><button>Szczegóły</button></a> #}
                   <a href="{% url 'update_exercise' exercise.pk %}"><button>Aktualizuj</button></a>
                   <a href="{% url 'delete_exercise' exercise.pk %}"><button>Usuń</button></a>
                 </li>

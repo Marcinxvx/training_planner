@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div><h3>Lista Ćwiczeń</h3>
+        <ol>
+            {% for exercise_in_session in exercises_in_session %}
+                <li><h4>{{ exercise_in_session.exercise.name }}</h4>
+                    <a href="{% url 'update_exercise_in_session' exercise_in_session.pk %}"><button>Aktualizuj</button></a>
+                    <a href="{% url 'delete_exercise_in_session' exercise_in_session.pk %}"><button>Usuń</button></a>
+                </li>
+            {% endfor %}
+        </ol>
+    </div>
+    <div><h3>Dodaj Nowe Ćwiczenie</h3>
+    {%  include 'training/form_training.html' %}
+    </div>
+{% endblock %}

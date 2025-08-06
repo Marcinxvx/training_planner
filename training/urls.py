@@ -14,5 +14,8 @@ urlpatterns = [
     path('delete_exercise/<int:primary_key>', views.DeleteExerciseView.as_view(), name='delete_exercise'),
     path('public_exercise_list/', views.PublicExerciseListView.as_view(), name='public_exercise_list'),
     path('public_exercise_list/copy/<int:primary_key>/', views.CopyExerciseView.as_view(), name='copy_exercise'),
+    path('create_exercise_in_session/<int:primary_key>/', views.CreateExerciseInSessionView.as_view(), name='create_exercise_in_session'),
+    path('update_exercise_in_session/<int:primary_key>', views.UpdateExerciseInSessionView.as_view(), name='update_exercise_in_session'),
+    path('delete-exercise_in_session/<int:primary_key>', views.DeleteExerciseInSessionView.as_view(), name='delete_exercise_in_session'),
 
 ]

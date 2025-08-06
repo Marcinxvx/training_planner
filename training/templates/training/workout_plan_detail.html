@@ -8,6 +8,7 @@
         <ul>
             {% for workout_session in workout_sessions %}
             <li><h5>{{ workout_session.date }} {{ workout_session.name }} </h5><h5>Status: {{ workout_session.get_status_display }} Plan: {{ workout_session.workout_plan }}</h5>
+                <a href="{% url 'create_exercise_in_session' workout_session.pk %}"><button>Ćwiczenia</button></a>
                 <a href="{% url 'update_workout_session' workout_session.pk %}"><button>Aktualizuj</button></a>
                 <a href="{% url 'delete_workout_session' workout_session.pk %}"><button>Usuń</button></a>
             </li>
