@@ -1,6 +1,6 @@
 import pytest
 from django.contrib.auth.models import User
-from training.models import WorkoutPlan, WorkoutSession, Exercise
+from training.models import WorkoutPlan, WorkoutSession, Exercise, ExerciseInSession
 from datetime import datetime,timezone, timedelta
 
 @pytest.fixture
@@ -35,3 +35,10 @@ def duplicated_exercises(user, workout_plans, workout_sessions):
         for j in range(10):
             duplicated_exercises.append(Exercise.objects.create(user=user, name=f'Exercise {j}', description=f'Random description {j}'))
     return duplicated_exercises
+
+@pytest.fixture
+def exercises_in_session(user, workout_sessions, exercises):
+    exercises_in_session = []
+    for i in range(10):
+        exercises_in_session.append(ExerciseInSession.objects.create(workout_session=workout_sessions[i], exercise=exercises[i], sets=i, repetitions=5 + i, weight=5 * i,))
+    return exercises_in_session

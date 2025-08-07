@@ -2,7 +2,7 @@ import pytest
 from django.contrib.auth.models import User
 from django.test import Client
 from django.urls import reverse
-from training.models import WorkoutPlan, WorkoutSession, Exercise
+from training.models import WorkoutPlan, WorkoutSession, Exercise, ExerciseInSession
 from datetime import datetime, timezone
 
 # Create your tests here.
@@ -256,3 +256,62 @@ def test_public_exercise_list_view_search(user):
     for exercise in response.context['exercises']:
         assert '3' in exercise.name
     assert response.context['exercises'].count() == 1
+
+@pytest.mark.django_db
+def test_create_exercise_in_session_view_get(user, workout_sessions, exercises, exercises_in_session):
+    c = Client()
+    c.force_login(user)
+    response = c.get(reverse('create_exercise_in_session', kwargs={'primary_key': workout_sessions[0].id}))
+    assert response.status_code == 200
+    assert response.context['workout_session'].id == workout_sessions[0].id
+    assert list(response.context['form'].fields['exercise'].queryset) == list(Exercise.objects.filter(user=user))
+    assert list(response.context['exercises_in_session']) == list(ExerciseInSession.objects.filter(workout_session=workout_sessions[0]))
+
+@pytest.mark.django_db
+def test_create_exercise_in_session_view_post_success(user, workout_sessions, exercises, exercises_in_session):
+    c = Client()
+    c.force_login(user)
+    data = {'exercise': exercises[0].id, 'sets': 5, 'repetitions': 10, 'weight': 50}
+    response = c.post(reverse('create_exercise_in_session', kwargs={'primary_key': workout_sessions[0].id}), data)
+    assert response.status_code == 302
+    assert ExerciseInSession.objects.filter(workout_session=workout_sessions[0].id, exercise=exercises[0].id, sets=5, repetitions=10, weight=50).exists
+
+@pytest.mark.django_db
+def test_update_exercise_in_session_view_get(user, workout_sessions, exercises, exercises_in_session):
+    c = Client()
+    c.force_login(user)
+    response = c.get(reverse('update_exercise_in_session', kwargs={'primary_key': exercises_in_session[0].id}))
+    assert response.status_code == 200
+    assert response.context['exercise_in_session'].id == exercises_in_session[0].id
+    assert response.context['form'].initial['sets'] == exercises_in_session[0].sets
+    assert response.context['form'].initial['repetitions'] == exercises_in_session[0].repetitions
+    assert response.context['form'].initial['weight'] == exercises_in_session[0].weight
+
+@pytest.mark.django_db
+def test_update_exercise_in_session_view_post_success(user, workout_sessions, exercises, exercises_in_session):
+    c = Client()
+    c.force_login(user)
+    data = {'sets': 50, 'repetitions': 100, 'weight': 500}
+    response = c.post(reverse('update_exercise_in_session', kwargs={'primary_key': exercises_in_session[0].id}),data)
+    assert response.status_code == 302
+    exercises_in_session[0].refresh_from_db()
+    assert exercises_in_session[0].sets == data['sets']
+    assert exercises_in_session[0].repetitions == data['repetitions']
+    assert exercises_in_session[0].weight == data['weight']
+
+@pytest.mark.django_db
+def test_delete_exercise_in_session_view_get(user, workout_sessions, exercises_in_session):
+    c = Client()
+    c.force_login(user)
+    response = c.get(reverse('delete_exercise_in_session', kwargs={'primary_key': exercises_in_session[0].id}))
+    assert response.status_code == 200
+    assert response.context['exercise_in_session'].id == exercises_in_session[0].id
+
+@pytest.mark.django_db
+def test_delete_exercise_in_session_view_post(user, workout_sessions, exercises_in_session):
+    c = Client()
+    c.force_login(user)
+    data = {'operation': 'Yes'}
+    response = c.post(reverse('delete_exercise_in_session', kwargs={'primary_key': exercises_in_session[0].id}), data)
+    assert response.status_code == 302
+    assert not ExerciseInSession.objects.filter(workout_session=workout_sessions[0].id).exists
