@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Plan treningowy</title>
+</head>
+<body>
+    <div>
+        <h1>Plan treningowy: {{ workout_plan.name }}</h1>
+        <p>{{ user.username }}</p>
+    </div>
+    {% for item in sessions_with_exercises %}
+        <div>
+            <h2>Trening: {{ item.session.name }}</h2>
+            <p>Data: {{ item.session.date }}</p>
+            {% if item.exercises %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ćwiczenie</th>
+                            <th>Serie</th>
+                            <th>Powtórzenia</th>
+                            <th>Ciężar</th>
+                        </tr>
+                    </thead>
+                    {% for ex in item.exercises %}
+                        <tr>
+                            <td>{{ ex.exercise.name }}</td>
+                            <td>{{ ex.sets }}</td>
+                            <td>{{ ex.repetitions }}</td>
+                            <td>{{ ex.weight }} kg</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>Nie dodano ćwiczeń do treningu</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+</body>
+</html>

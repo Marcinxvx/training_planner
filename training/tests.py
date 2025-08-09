@@ -314,4 +314,4 @@ def test_delete_exercise_in_session_view_post(user, workout_sessions, exercises_
     data = {'operation': 'Yes'}
     response = c.post(reverse('delete_exercise_in_session', kwargs={'primary_key': exercises_in_session[0].id}), data)
     assert response.status_code == 302
-    assert not ExerciseInSession.objects.filter(workout_session=workout_sessions[0].id).exists
+    assert not ExerciseInSession.objects.filter(pk=exercises_in_session[0].id).exists()

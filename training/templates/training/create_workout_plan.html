@@ -7,6 +7,7 @@
                     <a href="{% url 'workout_plan_detail' workout_plan.pk %}"><button>Szczegóły</button></a>
                     <a href="{% url 'update_workout_plan' workout_plan.pk %}"><button>Aktualizuj</button></a>
                     <a href="{% url 'delete_workout_plan' workout_plan.pk %}"><button>Usuń</button></a>
+                    <a href="{% url 'generate_workout_plan_pdf' workout_plan.pk %}"><button>Pobierz</button></a>
                 </li>
             {% endfor %}
         </ol>

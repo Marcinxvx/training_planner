@@ -1,11 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q, Min
+from django.db.models import Min
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
-from django import forms
 from training.forms import CreateWorkoutPlanForm, CreateWorkoutSessionForm, CreateWorkoutSessionForPlanForm, \
     CreateExerciseForm, CreateExerciseInSessionForm, UpdateExerciseInSessionForm
 from training.models import WorkoutPlan, WorkoutSession, Exercise, ExerciseInSession
+from django.template.loader import render_to_string
+from weasyprint import HTML
 
 
 # Create your views here.
@@ -215,3 +217,22 @@ class DeleteExerciseInSessionView(LoginRequiredMixin, View):
             exercise_in_session = ExerciseInSession.objects.get(pk=primary_key)
             exercise_in_session.delete()
         return redirect('create_exercise_in_session', primary_key=workout_session_primary_key)
+
+class GenerateWorkoutPlanPdfView(LoginRequiredMixin, View):
+    def get(self, request, primary_key):
+        workout_plan = WorkoutPlan.objects.get(pk=primary_key, user=request.user)
+        workout_sessions = WorkoutSession.objects.filter(workout_plan=workout_plan)
+        sessions_with_exercises = []
+        for workout_session in workout_sessions:
+            exercises = ExerciseInSession.objects.filter(workout_session=workout_session)
+            sessions_with_exercises.append({
+                'session': workout_session,
+                'exercises': exercises
+            })
+        html_string = render_to_string('training/workout_plan_pdf.html', {'workout_plan': workout_plan, 'sessions_with_exercises': sessions_with_exercises, 'user': request.user})
+        html = HTML(string=html_string)
+        result = html.write_pdf()
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename={workout_plan.name}.pdf'
+        response.write(result)
+        return response
