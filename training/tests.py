@@ -1,3 +1,5 @@
+from email.headerregistry import ContentDispositionHeader
+
 import pytest
 from django.contrib.auth.models import User
 from django.test import Client
@@ -315,3 +317,12 @@ def test_delete_exercise_in_session_view_post(user, workout_sessions, exercises_
     response = c.post(reverse('delete_exercise_in_session', kwargs={'primary_key': exercises_in_session[0].id}), data)
     assert response.status_code == 302
     assert not ExerciseInSession.objects.filter(pk=exercises_in_session[0].id).exists()
+
+@pytest.mark.django_db
+def test_generate_workout_plan_pdf_view(user, workout_plans):
+    c = Client()
+    c.force_login(user)
+    response = c.get(reverse('generate_workout_plan_pdf', kwargs={'primary_key': workout_plans[0].id}))
+    assert response.status_code == 200
+    assert response['Content-Type'] == 'application/pdf'
+    assert response['Content-Disposition'] == f'attachment; filename={workout_plans[0].name}.pdf'
