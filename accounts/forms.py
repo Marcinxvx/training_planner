@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-
+from .models import UserProfile
 
 class RegisterUserForm(UserCreationForm):
     class Meta:
@@ -15,3 +15,15 @@ class RegisterUserForm(UserCreationForm):
 class LoginUserForm(forms.Form):
     username = forms.CharField(label='Nazwa użytkownika', widget=forms.TextInput)
     password = forms.CharField(label='Hasło', widget=forms.PasswordInput)
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['height', 'weight', 'experience_in_months', 'age', 'additional_info']
+        labels = {
+            'height': 'Wzrost',
+            'weight': 'Waga',
+            'experience_in_months': 'Staż w miesiącach',
+            'age': 'Wiek',
+            'additional_info': 'Dodatkowe informacje'
+        }
