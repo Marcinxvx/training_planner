@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>Progresja</h1>
+  {% if profile_exists %}
+    <div>
+        <p>Wzrost: {{ user_profile.height }} cm</p>
+        <p>Waga: {{ user_profile.weight }} kg</p>
+        <p>Staż treningowy: {{ user_profile.experience_in_months }} miesięcy</p>
+        <p> Wiek: {{ user_profile.age }}</p>
+            {% if user_profile.additional_info %}
+            <p>Dodatkowe informacje: {{ user_profile.additional_info }}</p>
+            {% endif %}
+    </div>
+    <div>
+        <a href="{% url 'update_user_profile' %}"><button>Aktualizuj</button></a>
+        <a href="{% url 'delete_user_profile' %}"><button>Usuń</button></a>
+
+    </div>
+  {% else %}
+    <div>
+        <h2>Uzupełnij swój profil:</h2>
+        {%  include 'accounts/form_accounts.html' %}
+    </div>
+  {% endif %}
+{% endblock %}
