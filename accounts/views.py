@@ -3,10 +3,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render,redirect
 from django.views import View
 
+from training.conftest import workout_plans
 from training.forms import CreateWorkoutPlanForm
 from training.models import WorkoutPlan
-from .forms import RegisterUserForm, LoginUserForm, UserProfileForm
+from .forms import RegisterUserForm, LoginUserForm, UserProfileForm, WorkoutPlanSelectForm
 from .models import UserProfile
+from training.ai_service import get_training_advice
 
 
 # Create your views here.
@@ -92,3 +94,21 @@ class DeleteUserProfileView(LoginRequiredMixin, View):
             user_profile = UserProfile.objects.get(user=request.user)
             user_profile.delete()
         return redirect('create_user_profile')
+
+class TrainingAdviceView(LoginRequiredMixin, View):
+    def get(self, request):
+        workout_plans = WorkoutPlan.objects.filter(user=request.user)
+        form = WorkoutPlanSelectForm()
+        form.fields['workout_plan_name'].queryset = workout_plans
+        context = {'workout_plans': workout_plans, 'form': form, 'workout_plans_exists': workout_plans.exists()}
+        return render(request,'accounts/training_advice.html', context)
+    def post(self, request):
+        workout_plans = WorkoutPlan.objects.filter(user=request.user)
+        form = WorkoutPlanSelectForm(request.POST)
+        form.fields['workout_plan_name'].queryset = workout_plans
+        context = {'workout_plans': workout_plans, 'form': form, 'workout_plans_exists': workout_plans.exists()}
+        if form.is_valid():
+            workout_plan = form.cleaned_data['workout_plan_name']
+            ai_advice = get_training_advice(workout_plan, request.user.userprofile)
+            context['ai_advice'] = ai_advice
+        return render(request, 'accounts/training_advice.html', context)

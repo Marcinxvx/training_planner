@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-  <h1>Progresja</h1>
+  <h3>Mój profil</h3>
   {% if profile_exists %}
     <div>
         <p>Wzrost: {{ user_profile.height }} cm</p>
@@ -14,7 +14,7 @@
     <div>
         <a href="{% url 'update_user_profile' %}"><button>Aktualizuj</button></a>
         <a href="{% url 'delete_user_profile' %}"><button>Usuń</button></a>
-
+        <a href="{% url 'training_advice' %}"><button>Porada treningowa</button></a>
     </div>
   {% else %}
     <div>

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h3>Wirtualny Asystent Treningowy</h3>
+    {% if workout_plans_exists %}
+        <div>
+            <p>Wybierz plan treningowy, dla ktorego chcesz uzyskać porade</p>
+            {% include 'accounts/form_accounts.html' %}
+        </div>
+        {% if ai_advice %}
+            <div>
+                <h3>Zalecenia treningowe:</h3>
+                <p>{{ ai_advice }}</p>
+            </div>
+        {% endif %}
+    {% else %}
+        <div>
+            <p>Aby skorzystać z porady AI utworz plan treningowy</p>
+            <a href="{% url 'create_workout_plan' %}"><button>Utwórz</button></a>
+        </div>
+    {% endif %}
+{% endblock%}

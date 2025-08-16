@@ -2,6 +2,12 @@
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Zapisz</button>
+        <button type="submit">
+            {% if workout_plans_exists %}
+            Uzyskaj porade
+            {% else %}
+            Zapisz
+            {% endif %}
+        </button>
     </form>
 </div>
