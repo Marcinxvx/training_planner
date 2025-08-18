@@ -9,7 +9,7 @@ from training.models import WorkoutPlan
 from .forms import RegisterUserForm, LoginUserForm, UserProfileForm, WorkoutPlanSelectForm
 from .models import UserProfile
 from training.ai_service import get_training_advice
-
+from markdown import markdown
 
 # Create your views here.
 
@@ -109,6 +109,6 @@ class TrainingAdviceView(LoginRequiredMixin, View):
         context = {'workout_plans': workout_plans, 'form': form, 'workout_plans_exists': workout_plans.exists()}
         if form.is_valid():
             workout_plan = form.cleaned_data['workout_plan_name']
-            ai_advice = get_training_advice(workout_plan, request.user.userprofile)
+            ai_advice = markdown(get_training_advice(workout_plan, request.user.userprofile))
             context['ai_advice'] = ai_advice
         return render(request, 'accounts/training_advice.html', context)

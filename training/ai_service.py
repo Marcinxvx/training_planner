@@ -55,6 +55,8 @@ def get_training_advice(workout_plan, user_profile):
                    - Jeżeli trenujący nie rozpoczął jeszcze realizacji planu, możesz zaproponować od czego warto zacząć. 
                    - Unikaj ekstremalnych zaleceń, skup się na praktycznych wskazówkach: np. jak ułożyć pierwszą sesję, jak dobrać ćwiczenia, 
                      jak dostosować obciążenie, jak uniknąć kontuzji.
+                   - Przygotuj odpowiedź w formacie markdown z wyraźnym podziałem na sekcje, nagłówkami, listami punktowanymi i numerowanymi,
+                     pogrubieniami, kursywą tam gdzie to pasuje, używaj nagłówków (## lub ###), list, akapitów, aby tekst był czytelny i estetyczny.
                    """
     try:
         response = openai.chat.completions.create(

@@ -8,8 +8,7 @@
         </div>
         {% if ai_advice %}
             <div>
-                <h3>Zalecenia treningowe:</h3>
-                <p>{{ ai_advice }}</p>
+                <p>{{ ai_advice|safe }}</p>
             </div>
         {% endif %}
     {% else %}
